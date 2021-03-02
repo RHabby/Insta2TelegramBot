@@ -1,14 +1,14 @@
-from utils.set_bot_commands import set_bot_commands
 from aiogram import executor
 
 from handlers import dp
 from utils.misc.loggers import log
 from utils.notify_admins import shutdown_notify, start_notify
+from utils.set_bot_commands import set_basic_commands
 
 
 async def on_startup(dp):
     await start_notify(dp)
-    await set_bot_commands(dp)
+    await set_basic_commands(dp)
 
 
 async def on_shutdown(dp):
