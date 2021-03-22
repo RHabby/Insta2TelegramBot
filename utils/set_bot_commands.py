@@ -7,5 +7,5 @@ async def set_basic_commands(dp: Dispatcher):
         [
             types.BotCommand("start", "Start the bot"),
             types.BotCommand("help", "Help message"),
-        ]
+        ],
     )
