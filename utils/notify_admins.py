@@ -1,7 +1,8 @@
-from aiogram import Dispatcher
-from settings import config
+import logging
 
-from utils.misc.loggers import log
+from aiogram import Dispatcher
+
+from settings import config
 
 
 async def start_notify(dp: Dispatcher):
@@ -9,10 +10,11 @@ async def start_notify(dp: Dispatcher):
         try:
             await dp.bot.send_message(
                 chat_id=admin,
-                text="Бота запустили"
+                text="Бота запустили",
+                disable_notification=True,
             )
         except Exception as e:
-            log.exception(e)
+            logging.exception(e)
 
 
 async def shutdown_notify(dp: Dispatcher):
@@ -20,7 +22,8 @@ async def shutdown_notify(dp: Dispatcher):
         try:
             await dp.bot.send_message(
                 chat_id=admin,
-                text="Бот упал"
+                text="Бот упал",
+                disable_notification=True,
             )
         except Exception as e:
-            log.exception(e)
+            logging.exception(e)
