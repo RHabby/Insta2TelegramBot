@@ -65,6 +65,9 @@ def regroup_list(data: List, max_inner_list_len: int = 3):
 
 
 def modify_name(name: str) -> str:
+    if not demoji.last_downloaded_timestamp():
+        demoji.download_codes()
+
     name = demoji.replace(string=name, repl="")
     name = unicodedata.normalize("NFKC", name)
     name = iuliia.translate(source=name, schema=iuliia.WIKIPEDIA)
