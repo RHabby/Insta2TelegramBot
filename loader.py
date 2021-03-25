@@ -7,7 +7,7 @@ from utils.InstaCrawler import app
 
 
 bot = Bot(token=config.TOKEN, parse_mode=types.ParseMode.HTML)
-storage = RedisStorage2()
+storage = RedisStorage2(host="redis", port=6379)
 dp = Dispatcher(bot, storage=storage)
 
 insta = app.insta_crawler.InstaCrawler(cookie=config.COOKIE)
