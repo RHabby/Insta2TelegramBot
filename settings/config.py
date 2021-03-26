@@ -12,6 +12,10 @@ admins = [
     os.environ.get("admin_02"),
 ]
 
+# [redis]
+REDIS_HOST = os.environ.get("REDIS_HOST") or 'localhost'
+REDIS_PORT = 6379
+
 # [Imgur API]
 IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")
 IMGUR_CLIENT_SECRET = os.environ.get("IMGUR_CLIENT_SECRET")
