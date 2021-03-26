@@ -1,0 +1,35 @@
+version: "3"
+services:
+  tgbot:
+    container_name: tg_bot
+    build: .
+
+    environment:
+      - REDIS_HOST=redis
+    env_file:
+      - .env
+      
+    volumes:
+        - ./bot_logger.log:/projects/insta2tgbot/bot_logger.log
+
+    depends_on:
+      - redis
+    networks:
+      - redis-net
+
+    restart: always
+        
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    
+    hostname: redis
+    networks:
+      - redis-net
+    
+      restart: always
+
+networks:
+    redis-net:
+        driver: bridge
+
