@@ -1,3 +1,3 @@
 [submodule "utils/InstaCrawler"]
 	path = utils/InstaCrawler
-	url = git@github.com:RHabby/InstaCrawler
+	url = https://github.com/RHabby/InstaCrawler.git
