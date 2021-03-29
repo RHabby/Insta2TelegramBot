@@ -214,7 +214,8 @@ async def stories(call: types.CallbackQuery):
     if stories:
         media = [{"media": rf'{item["post_content"][0]}',
                   "parse_mode": "HTML",
-                  "type": "video" if ".mp4" in item else "photo"} for item in stories.values()]
+                  "type": "video" if ".mp4" in item["post_content"][0] else "photo"}
+                 for item in stories.values()]
 
         media = sorted(media, key=lambda storie: ".mp4" in storie["media"])
 
@@ -224,8 +225,8 @@ async def stories(call: types.CallbackQuery):
                 await types.ChatActions.upload_photo()
                 await call.message.answer_media_group(media=album)
             except WrongFileIdentifier:
-                (await call.message.answer_video(video=link["media"])
-                 if link["type"] == "video" else await call.message.answer_photo(
-                    photo=link["media"]) for link in album)
+                [await call.message.answer_video(video=link["media"])
+                    if link["type"] == "video" else await call.message.answer_photo(
+                    photo=link["media"]) for link in album]
     else:
         await call.message.answer(text=no_stories_text)
