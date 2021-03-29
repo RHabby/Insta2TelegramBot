@@ -27,7 +27,7 @@ services:
     networks:
       - redis-net
     
-      restart: always
+    restart: always
 
 networks:
     redis-net:
