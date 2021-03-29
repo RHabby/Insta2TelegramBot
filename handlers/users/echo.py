@@ -1,4 +1,5 @@
 import logging
+from utils.misc.loggers import log_event
 
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
@@ -16,9 +17,9 @@ from states.post_to_reddit import PostToReddit
 @dp.message_handler(content_types=ContentType.TEXT, state="*")
 @dp.throttled(rate=2)
 async def echo_text(message: types.Message):
-    logging.info(f'{message.chat.id} | '
-                 f'{message.chat.first_name} {message.chat.last_name} | '
-                 f'{message.chat.username} | {message.text}')
+    log_event(message.chat.id, message.chat.full_name,
+              message.chat.username, message.text,
+              level="info")
     await message.answer(message.text)
 
 

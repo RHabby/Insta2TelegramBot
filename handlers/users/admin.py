@@ -13,6 +13,7 @@ from settings import config
 from states.post_to_reddit import PostToReddit
 
 from utils.misc import imgur, reddit_utils
+from utils.misc.loggers import log_event
 from utils.sender_helpers import modify_name
 
 
@@ -163,5 +164,6 @@ async def delete_message(call: types.CallbackQuery, state: FSMContext):
             del data[str(call.message.message_id)]
         else:
             data.pop(key="user")
-    logging.info(f'{call.message.chat.id} | {call.message.chat.full_name} | '
-                 f'{call.message.chat.username}')
+
+    log_event(str(call.message.chat.id),
+              call.message.chat.full_name, call.message.chat.username, level="info")

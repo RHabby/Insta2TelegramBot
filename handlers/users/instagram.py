@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from utils.misc.loggers import log_event
 
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
@@ -83,13 +84,18 @@ async def profile(message: types.Message):
     try:
         loop = asyncio.get_running_loop()
         user = await loop.run_in_executor(None, insta.get_user_info, url)
-        logging.info(f'{message.chat.id} | {message.chat.full_name} | '
-                     f'{message.chat.username} | {url}')
+
+        log_event(message.chat.id, message.chat.full_name,
+                  message.chat.username, url,
+                  level="info")
     except NotFoundError as e:
         await message.delete()
         await message.answer(text=not_found_profile_text.format(url=url, error=e))
-        logging.error(f'{message.chat.id} | {message.chat.full_name} | '
-                      f'{message.chat.username} | {url} | {repr(e)}')
+
+        log_event(message.chat.id, message.chat.full_name,
+                  message.chat.username, url, repr(e),
+                  level="error")
+
         return True
 
     caption = profile_caption.format(
@@ -112,8 +118,10 @@ async def profile(message: types.Message):
             reply_markup=markup,
         )
     except Exception as e:
-        logging.error(f'{message.chat.id} | {message.chat.full_name} | '
-                      f'{message.chat.username} | {url} | {user.get("profile_pic_hd")} | {repr(e)}')
+        log_event(message.chat.id, message.chat.full_name,
+                  message.chat.username, url, user.get("profile_pic_hd"),
+                  repr(e), level="error")
+
         imgur_img = await imgur.upload_to_imgur(url=user.get("profile_pic_hd"))
         await message.answer_photo(
             photo=imgur_img,
@@ -132,8 +140,8 @@ async def last_twelve_posts(call: types.CallbackQuery, state: FSMContext):
     loop = asyncio.get_running_loop()
     user_info = await loop.run_in_executor(None, insta.get_user_info,
                                            callback_url)
-    logging.info(f'{call.message.chat.id} | {call.message.chat.full_name} | '
-                 f'{call.message.chat.username}')
+    log_event(call.message.chat.id, call.message.chat.full_name,
+              call.message.chat.username, level="info")
 
     posts = user_info.get("last_twelve_posts")
     if posts:
@@ -175,8 +183,9 @@ async def last_twelve_posts(call: types.CallbackQuery, state: FSMContext):
     else:
         if user_info.get("posts_count") > 0 and len(posts) == 0:
             await call.message.answer(text=private_profile_text)
-            logging.info(f'{call.message.chat.id} | {call.message.chat.full_name} | '
-                         f'{call.message.chat.username} | private profile')
+
+            log_event(call.message.chat.id, call.message.chat.full_name,
+                      call.message.chat.username, "private profile", level="info")
         elif user_info.get("posts_count") == 0:
             await call.message.answer(text=no_posts_text)
 
@@ -191,12 +200,15 @@ async def stories(call: types.CallbackQuery):
     try:
         loop = asyncio.get_running_loop()
         stories = await loop.run_in_executor(None, insta.get_stories, callback_url)
-        logging.info(f'{call.message.chat.id} | {call.message.chat.full_name} | '
-                     f'{call.message.chat.username}')
+
+        log_event(call.message.chat.id, call.message.chat.full_name,
+                  call.message.chat.username, level="info")
     except PrivateProfileError as e:
         await call.message.answer(text=private_profile_text)
-        logging.info(f'{call.message.chat.id} | {call.message.chat.full_name} | '
-                     f'{call.message.chat.username} | {repr(e)}')
+
+        log_event(call.message.chat.id, call.message.chat.full_name,
+                  call.message.chat.username, repr(e), level="info")
+
         return True
 
     if stories:
