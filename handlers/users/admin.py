@@ -2,8 +2,7 @@ import logging
 
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
-
-from asyncprawcore.exceptions import BadRequest
+from aiogram.utils.exceptions import BadRequest as aiogram_BadRequest
 
 from keyboards.inline import post_info as p_info
 
@@ -130,7 +129,7 @@ async def edit_title_callback(call: types.CallbackQuery, state: FSMContext):
             await call.message.edit_caption(
                 caption=text,
             )
-        except BadRequest:
+        except aiogram_BadRequest:
             await call.message.edit_text(
                 text=text,
             )
