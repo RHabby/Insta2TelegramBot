@@ -3,14 +3,14 @@ services:
   tgbot:
     container_name: tg_bot
     build: .
-
+    
     environment:
       - REDIS_HOST=redis
     env_file:
       - .env
       
     volumes:
-        - ./bot_logger.log:/projects/insta2tgbot/bot_logger.log
+        - ./bot_logger.log:/insta2tgbot/bot_logger.log
 
     depends_on:
       - redis
