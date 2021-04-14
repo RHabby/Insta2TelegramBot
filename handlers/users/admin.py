@@ -19,10 +19,19 @@ from utils.sender_helpers import modify_name
 
 # admin commands entrypoint
 @dp.message_handler(commands=["admin"], chat_id=config.admins, state="*")
-async def only_admin(message: types.Message, state: FSMContext):
+async def only_admin(message: types.Message):
+    await message.answer(text="What do you want?",
+                         reply_markup=p_info.generate_admin_kboard())
+
+
+# storage data funcs
+@dp.callback_query_handler(text="data", state="*")
+async def storage_data_info(call: types.CallbackQuery, state: FSMContext):
+    await call.answer()
+
     async with state.proxy() as data:
-        await message.answer(text=f'{len(data) = }',
-                             reply_markup=p_info.generate_admin_kboard())
+        await call.message.answer(text=f'{len(data) = }',
+                                  reply_markup=p_info.generate_data_info_kboard())
 
 
 @dp.callback_query_handler(text="clear", chat_id=config.admins, state="*")
