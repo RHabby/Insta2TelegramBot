@@ -81,6 +81,16 @@ async def submission_info(call: types.CallbackQuery):
     )
 
 
+@dp.callback_query_handler(lambda call: "delete_subm" in call.data, state="*")
+async def delete_submission(call: types.CallbackQuery):
+    await call.answer()
+
+    submission_code = call.data.split(",")[1]
+    await reddit_utils.delete_submission(submission_code=submission_code)
+
+    await call.message.edit_caption(caption="Submission was deleted")
+
+
 # submit insta post to reddit part
 @dp.callback_query_handler(text="reddit", state=PostToReddit.reddit)
 async def reddit(call: types.CallbackQuery, state: FSMContext):
