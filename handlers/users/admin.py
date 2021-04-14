@@ -8,7 +8,7 @@ from keyboards.inline import post_info as p_info
 
 from loader import bot, dp
 
-from settings import config
+from settings import config, text_templates
 
 from states.post_to_reddit import PostToReddit
 
@@ -38,6 +38,24 @@ async def storage_data_info(call: types.CallbackQuery, state: FSMContext):
 async def clear_data(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
     await call.message.edit_text(text="the data was cleared for your account.")
+
+
+# redditor funcs
+@dp.callback_query_handler(text="redditor", state="*")
+async def redditor(call: types.CallbackQuery):
+    await call.answer()
+
+    redditor = await reddit_utils.get_redditor_info()
+    text = text_templates.redditor_info_text.format(
+        name=redditor["name"],
+        link_karma=redditor["link_karma"],
+        comment_karma=redditor["comment_karma"],
+        id=redditor["id"],
+    )
+    await call.message.answer(
+        text=text,
+        reply_markup=p_info.generate_redditor_info_kboard(submissions=redditor["submissions"]),
+    )
 
 
 # submit insta post to reddit part
