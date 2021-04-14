@@ -49,3 +49,9 @@ no_stories_text = "Sorry, but the user doesn't seem to have any stories..."
 no_posts_text = "Sorry, but the user doesn't seem to have any posts..."
 
 # Admin Handlers Text Templates
+redditor_info_text = ("Username: <strong>{name}</strong>\n———\n"
+                      "Link Karma: <strong>{link_karma}</strong>\n———\n"
+                      "Comment Karma: <strong>{comment_karma}</strong>\n———\n"
+                      "ID: <strong>{id}</strong>\n———\n\n"
+                      "Here is the last 10 of your submissions:"
+                      )
