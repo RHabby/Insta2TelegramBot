@@ -91,3 +91,15 @@ def generate_data_info_kboard() -> types.InlineKeyboardMarkup:
     data_kboard.add(*buttons)
 
     return data_kboard
+
+
+def generate_redditor_info_kboard(submissions) -> types.InlineKeyboardMarkup:
+    buttons = [
+        types.InlineKeyboardButton(text=submission["title"], callback_data=f'submission,{submission["id"]}')
+        for submission in submissions
+    ]
+
+    redditor_kboard = types.InlineKeyboardMarkup(row_width=2)
+    redditor_kboard.add(*buttons)
+
+    return redditor_kboard
