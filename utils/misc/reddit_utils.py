@@ -21,6 +21,12 @@ async def submit_post(subreddit_name: str, title: str, url: str):
     return await sub.submit(title=title, url=url)
 
 
+async def delete_submission(submission_code: str):
+    submission = await reddit.submission(id=submission_code)
+
+    return await submission.delete()
+
+
 async def get_submission_info(submission_code: str) -> models.reddit.submission.Submission:
     submission = await reddit.submission(id=submission_code)
     return submission
