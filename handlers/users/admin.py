@@ -58,6 +58,29 @@ async def redditor(call: types.CallbackQuery):
     )
 
 
+@dp.callback_query_handler(lambda call: "submission" in call.data, state="*")
+async def submission_info(call: types.CallbackQuery):
+    await call.answer()
+
+    submission_code = call.data.split(",")[1]
+    submission = await reddit_utils.get_submission_info(submission_code=submission_code)
+
+    caption = text_templates.submission_info_text.format(
+        title=submission.title,
+        comments=submission.num_comments,
+        score=submission.score,
+        subreddit=submission.subreddit.display_name,
+        ratio=submission.upvote_ratio,
+        id=submission.id,
+    )
+
+    await call.message.answer_photo(
+        photo=submission.url,
+        caption=caption,
+        reply_markup=p_info.generate_submission_info_kboard(submission=submission),
+    )
+
+
 # submit insta post to reddit part
 @dp.callback_query_handler(text="reddit", state=PostToReddit.reddit)
 async def reddit(call: types.CallbackQuery, state: FSMContext):
