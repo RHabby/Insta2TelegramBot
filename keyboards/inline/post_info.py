@@ -103,3 +103,16 @@ def generate_redditor_info_kboard(submissions) -> types.InlineKeyboardMarkup:
     redditor_kboard.add(*buttons)
 
     return redditor_kboard
+
+
+def generate_submission_info_kboard(submission) -> types.InlineKeyboardMarkup:
+    buttons = [
+        types.InlineKeyboardButton(text="link", url=f'{config.REDDIT_BASE_URL}{submission.permalink}'),
+        types.InlineKeyboardButton(text="crosspost", callback_data=f'crosspost,{submission.id}'),
+        types.InlineKeyboardButton(text="delete submission", callback_data=f'delete_subm,{submission.id}'),
+    ]
+
+    submission_kboard = types.InlineKeyboardMarkup(row_width=1)
+    submission_kboard.add(*buttons)
+
+    return submission_kboard
