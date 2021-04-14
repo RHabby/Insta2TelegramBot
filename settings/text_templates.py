@@ -55,3 +55,11 @@ redditor_info_text = ("Username: <strong>{name}</strong>\n———\n"
                       "ID: <strong>{id}</strong>\n———\n\n"
                       "Here is the last 10 of your submissions:"
                       )
+
+submission_info_text = ("Title: <strong>{title}</strong>\n———\n"
+                        "Subreddit: <strong>{subreddit}</strong>\n———\n"
+                        "Comments: <strong>{comments}</strong>\n———\n"
+                        "Likes: <strong>{score}</strong>\n———\n"
+                        "Upvote Ratio: <strong>{ratio}</strong>\n———\n"
+                        "ID: <strong>{id}</strong>"
+                        )
