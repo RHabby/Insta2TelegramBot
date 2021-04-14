@@ -80,3 +80,14 @@ def generate_admin_kboard() -> types.InlineKeyboardMarkup:
     admin_kboard.add(*buttons)
 
     return admin_kboard
+
+
+def generate_data_info_kboard() -> types.InlineKeyboardMarkup:
+    buttons = [
+        types.InlineKeyboardButton(text="clear data", callback_data="clear"),
+    ]
+
+    data_kboard = types.InlineKeyboardMarkup(row_width=2)
+    data_kboard.add(*buttons)
+
+    return data_kboard
