@@ -49,3 +49,21 @@ async def get_redditors_submissions(redditor: models.reddit.redditor.Redditor) -
         )
 
     return redditor_submissions
+
+
+async def get_redditor_info() -> Dict:
+    """
+    additional info about the redditor
+    """
+    owner_redditor = await get_me_as_redditor()
+    redditor_submissions = await get_redditors_submissions(redditor=owner_redditor)
+
+    redditor_info = {
+        "name": owner_redditor.name,
+        "id": owner_redditor.id,
+        "comment_karma": owner_redditor.comment_karma,
+        "link_karma": owner_redditor.link_karma,
+        "submissions": redditor_submissions,
+    }
+
+    return redditor_info
