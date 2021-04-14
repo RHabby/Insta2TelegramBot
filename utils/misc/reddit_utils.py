@@ -1,4 +1,7 @@
+from typing import Dict, List
+
 import asyncpraw
+from asyncpraw import models
 
 from settings import config
 
@@ -21,3 +24,11 @@ async def submit_post(subreddit_name: str, title: str, url: str):
 async def get_submission_info(submission_code: str):
     submission = await reddit.submission(id=submission_code)
     return submission
+
+
+async def get_me_as_redditor() -> models.reddit.redditor.Redditor:
+    """
+    the user (Redditor) according to the
+    credentials specified in the .env file
+    """
+    return await reddit.user.me()
