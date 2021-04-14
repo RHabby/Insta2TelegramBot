@@ -21,7 +21,7 @@ async def submit_post(subreddit_name: str, title: str, url: str):
     return await sub.submit(title=title, url=url)
 
 
-async def get_submission_info(submission_code: str):
+async def get_submission_info(submission_code: str) -> models.reddit.submission.Submission:
     submission = await reddit.submission(id=submission_code)
     return submission
 
@@ -32,3 +32,20 @@ async def get_me_as_redditor() -> models.reddit.redditor.Redditor:
     credentials specified in the .env file
     """
     return await reddit.user.me()
+
+
+async def get_redditors_submissions(redditor: models.reddit.redditor.Redditor) -> List:
+    """
+    info about the last 10 redditor submissions
+    """
+    redditor_submissions = []
+
+    async for submission in redditor.submissions.new(limit=10):
+        redditor_submissions.append(
+            {
+                "id": submission.id,
+                "title": submission.title,
+            },
+        )
+
+    return redditor_submissions
