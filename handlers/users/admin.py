@@ -17,6 +17,7 @@ from utils.misc.loggers import log_event
 from utils.sender_helpers import modify_name
 
 
+# admin commands entrypoint
 @dp.message_handler(commands=["admin"], chat_id=config.admins, state="*")
 async def only_admin(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -30,19 +31,7 @@ async def clear_data(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(text="the data was cleared for your account.")
 
 
-@dp.message_handler(state=PostToReddit.enter_title)
-async def enter_title(message: types.Message, state: FSMContext):
-    title = message.text
-    async with state.proxy() as data:
-        data["submit"]["title"] = title.strip()
-
-    await message.answer(text="Choose the subreddit now...",
-                         reply_markup=p_info.generate_subreddit_kboard(
-                             subreddit_list=config.SUBREDDIT_LIST,
-                         ))
-    await PostToReddit.subreddit.set()
-
-
+# submit insta post to reddit part
 @dp.callback_query_handler(text="reddit", state=PostToReddit.reddit)
 async def reddit(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
@@ -145,6 +134,19 @@ async def edit_title(message: types.Message, state: FSMContext):
         await message.answer(
             text=f'New Title: {data["submit"]["title"]}',
             reply_markup=p_info.generate_subreddit_kboard(subreddit_list=config.SUBREDDIT_LIST))
+    await PostToReddit.subreddit.set()
+
+
+@dp.message_handler(state=PostToReddit.enter_title)
+async def enter_title(message: types.Message, state: FSMContext):
+    title = message.text
+    async with state.proxy() as data:
+        data["submit"]["title"] = title.strip()
+
+    await message.answer(text="Choose the subreddit now...",
+                         reply_markup=p_info.generate_subreddit_kboard(
+                             subreddit_list=config.SUBREDDIT_LIST,
+                         ))
     await PostToReddit.subreddit.set()
 
 
