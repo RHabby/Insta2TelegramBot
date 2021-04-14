@@ -72,10 +72,11 @@ def generate_posted_kboard(permalink: str) -> types.InlineKeyboardMarkup:
 
 def generate_admin_kboard() -> types.InlineKeyboardMarkup:
     buttons = [
-        types.InlineKeyboardButton(text="clear data", callback_data="clear"),
+        types.InlineKeyboardButton(text="data info", callback_data="data"),
+        types.InlineKeyboardButton(text="redditor info", callback_data="redditor"),
     ]
 
-    admin_kboard = types.InlineKeyboardMarkup(row_width=2)
+    admin_kboard = types.InlineKeyboardMarkup(row_width=1)
     admin_kboard.add(*buttons)
 
     return admin_kboard
