@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Union
 
 from aiogram import types
+from aiogram.utils.callback_data import CallbackData
 
 from settings import config
 
@@ -39,10 +40,11 @@ def generate_which_one_kboard(post_content_len: int) -> types.InlineKeyboardMark
     return which_one_kboard
 
 
-def generate_subreddit_kboard(subreddit_list: List) -> types.InlineKeyboardMarkup:
+def generate_subreddit_kboard(subreddit_list: List,
+                              submission_code: Union[str, None] = None) -> types.InlineKeyboardMarkup:
     buttons = [
         types.InlineKeyboardButton(
-            text=subreddit, callback_data=subreddit,
+            text=subreddit, callback_data=f'{submission_code}:{subreddit}' if submission_code else subreddit,
         ) for subreddit in subreddit_list
     ]
 
@@ -93,13 +95,19 @@ def generate_data_info_kboard() -> types.InlineKeyboardMarkup:
     return data_kboard
 
 
+redditor_cb = CallbackData("submission", "id", "action")
+
+
 def generate_redditor_info_kboard(submissions) -> types.InlineKeyboardMarkup:
     buttons = [
-        types.InlineKeyboardButton(text=submission["title"], callback_data=f'submission,{submission["id"]}')
+        types.InlineKeyboardButton(
+            text=submission["title"],
+            callback_data=redditor_cb.new(id=submission["id"], action="get_submission_info"),
+        )
         for submission in submissions
     ]
 
-    redditor_kboard = types.InlineKeyboardMarkup(row_width=2)
+    redditor_kboard = types.InlineKeyboardMarkup(row_width=1)
     redditor_kboard.add(*buttons)
 
     return redditor_kboard
@@ -107,9 +115,18 @@ def generate_redditor_info_kboard(submissions) -> types.InlineKeyboardMarkup:
 
 def generate_submission_info_kboard(submission) -> types.InlineKeyboardMarkup:
     buttons = [
-        types.InlineKeyboardButton(text="link", url=f'{config.REDDIT_BASE_URL}{submission.permalink}'),
-        types.InlineKeyboardButton(text="crosspost", callback_data=f'crosspost,{submission.id}'),
-        types.InlineKeyboardButton(text="delete submission", callback_data=f'delete_subm,{submission.id}'),
+        types.InlineKeyboardButton(
+            text="link",
+            url=f'{config.REDDIT_BASE_URL}{submission.permalink}',
+        ),
+        types.InlineKeyboardButton(
+            text="crosspost",
+            callback_data=redditor_cb.new(id=submission.id, action="crosspost"),
+        ),
+        types.InlineKeyboardButton(
+            text="delete submission",
+            callback_data=redditor_cb.new(id=submission.id, action="delete_submission"),
+        ),
     ]
 
     submission_kboard = types.InlineKeyboardMarkup(row_width=1)
