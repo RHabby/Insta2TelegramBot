@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
@@ -58,11 +59,11 @@ async def redditor(call: types.CallbackQuery):
     )
 
 
-@dp.callback_query_handler(lambda call: "submission" in call.data, state="*")
-async def submission_info(call: types.CallbackQuery):
+@dp.callback_query_handler(p_info.redditor_cb.filter(action="get_submission_info"), state="*")
+async def submission_info(call: types.CallbackQuery, callback_data: Dict):
     await call.answer()
 
-    submission_code = call.data.split(",")[1]
+    submission_code = callback_data["id"]
     submission = await reddit_utils.get_submission_info(submission_code=submission_code)
 
     caption = text_templates.submission_info_text.format(
@@ -81,14 +82,43 @@ async def submission_info(call: types.CallbackQuery):
     )
 
 
-@dp.callback_query_handler(lambda call: "delete_subm" in call.data, state="*")
-async def delete_submission(call: types.CallbackQuery):
+@dp.callback_query_handler(p_info.redditor_cb.filter(action="delete_submission"), state="*")
+async def delete_submission(call: types.CallbackQuery, callback_data: Dict):
     await call.answer()
 
-    submission_code = call.data.split(",")[1]
+    submission_code = callback_data["id"]
     await reddit_utils.delete_submission(submission_code=submission_code)
 
     await call.message.edit_caption(caption="Submission was deleted")
+
+
+@dp.callback_query_handler(p_info.redditor_cb.filter(action="crosspost"), state="*")
+async def crosspost_submission(call: types.CallbackQuery, callback_data: Dict):
+    await call.answer()
+
+    submission_code = callback_data["id"]
+
+    await call.message.edit_reply_markup(
+        reply_markup=p_info.generate_subreddit_kboard(
+            subreddit_list=config.SUBREDDIT_LIST,
+            submission_code=f'submission_to_crosspost:{submission_code}',
+        ),
+    )
+
+
+@dp.callback_query_handler(lambda call: "submission_to_crosspost" in call.data, state="*")
+async def choose_subreddit_for_crosspost(call: types.CallbackQuery):
+    await call.answer()
+
+    submission_code = call.data.split(":")[1]
+    subreddit_name = call.data.split(":")[2]
+
+    await reddit_utils.crosspost_submission(
+        submission_code=submission_code,
+        subreddit_name=subreddit_name,
+    )
+
+    await call.message.edit_caption(caption=f'Succesfully crossposted to {subreddit_name}')
 
 
 # submit insta post to reddit part
