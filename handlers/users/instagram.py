@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from utils.misc.loggers import log_event
 
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
@@ -19,9 +18,10 @@ from settings.text_templates import (no_posts_text, no_stories_text,
 
 from states.post_to_reddit import PostToReddit
 
-from utils.InstaCrawler.app.insta_crawler.exceptions import (NotFoundError,
-                                                             PrivateProfileError)
+from utils.InstaCrawler.app.insta_crawler.exceptions import (
+    NotFoundError, PrivateProfileError)
 from utils.misc import imgur
+from utils.misc.loggers import log_event
 from utils.sender_helpers import modify_url, regroup_list, send_by_content_len
 
 
@@ -208,7 +208,6 @@ async def stories(call: types.CallbackQuery):
 
         log_event(call.message.chat.id, call.message.chat.full_name,
                   call.message.chat.username, repr(e), level="info")
-
         return True
 
     if stories:
