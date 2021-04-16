@@ -3,7 +3,7 @@ services:
   tgbot:
     container_name: tg_bot
     build: .
-    
+
     environment:
       - REDIS_HOST=redis
     env_file:
@@ -22,6 +22,10 @@ services:
   redis:
     container_name: redis
     image: "redis:alpine"
+    command: redis-server /etc/redis/redis.conf
+
+    volumes:
+      - redis-vol:/etc/redis/redis.conf
     
     hostname: redis
     networks:
@@ -32,4 +36,8 @@ services:
 networks:
     redis-net:
         driver: bridge
+
+volumes:
+  redis-vol:
+    external: true
 
